@@ -1,0 +1,282 @@
+{
+	"info": {
+		"_postman_id": "9f0f8f21-275b-4412-8a30-1b316475da37",
+		"name": "Trello_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST /boards",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "186199c1-b74a-4eb4-9cc0-f6fc602485a0",
+						"exec": [
+							"var jsonData = pm.response.json(); // Salvando o retorno em uma variavel\r",
+							"pm.collectionVariables.set(\"boadId\", jsonData.id); // Salvando a tag de retorno boadId em uma variavel \r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200); //validando o retorno do codigo 200\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    pm.expect(jsonData.name).to.eql(\"TestesQA_1\"); //validando o nome do board que foi criado\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"idOrganization\"); // validando se no arquivo Body retorna idOrganization\r",
+							"    pm.expect(pm.response.text()).to.include(\"closed\"); // validando se no arquivo Body retorna closed\r",
+							"    pm.expect(pm.response.text()).to.include(\"idEnterprise\");  // validando se no arquivo Body retorna idEnterprise\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/1/boards/?key={{key}}&token={{token}}&name=TestesQA_1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "TestesQA_1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e0d14839-deed-4dbb-b2b7-65907ed3b8c8",
+						"exec": [
+							"var jsonData = pm.response.json(); // Salvando o retorno em uma variavel\r",
+							"pm.collectionVariables.set(\"listId\", jsonData.id); // Salvando a tag de retorno listId em uma variavel \r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);// validando o retorno do codigo 200 \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    pm.expect(jsonData.name).to.eql(\"backlog\"); //validando o nome da lista \"backlog foi criada\" que foi criado\r",
+							"    pm.expect(jsonData.idBoard).to.eql(pm.collectionVariables.get(\"boadId\")); //compara se o idBoard retornado é eq ao salvo.\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/1/lists?key={{key}}&token={{token}}&name=backlog&idBoard={{boadId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"1",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "backlog"
+						},
+						{
+							"key": "idBoard",
+							"value": "{{boadId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /cards",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "be5e2ecc-7023-40dc-ba48-7be1f936e1b8",
+						"exec": [
+							"var jsonData = pm.response.json(); // Salvando o retorno em uma variavel\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);// validando o retorno do codigo 200 \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    pm.expect(jsonData.idBoard).to.eql(pm.collectionVariables.get(\"boadId\"));//compara se o idBoard retornado é eq ao salvo.\r",
+							"    pm.expect(jsonData.idList).to.eql(pm.collectionVariables.get(\"listId\"));//compara se o listId retornado é eq ao salvo.\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "838bcd00-c575-4977-838a-ce855feb8964",
+						"exec": [
+							"pm.collectionVariables.set(\"nameCard\",\"Sensidia\")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/1/cards?key={{key}}&token={{token}}&idList={{listId}}&name={{nameCard}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"1",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "idList",
+							"value": "{{listId}}"
+						},
+						{
+							"key": "name",
+							"value": "{{nameCard}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /boards",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fec56e5b-9195-4786-8e7d-767ef7d72a0f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);// validando o retorno do codigo 200 \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/1/boards/{{boadId}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{boadId}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "e1cecc6b-0908-4d28-a871-831f2745562b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "45757c55-288a-4d68-9034-97507d150847",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "13037933-e6cb-44aa-9112-d25897829354",
+			"key": "boadId",
+			"value": ""
+		},
+		{
+			"id": "f1e54544-1012-4283-af83-126045e8c028",
+			"key": "listId",
+			"value": ""
+		},
+		{
+			"id": "5093b714-359b-4bc4-9a2b-897f08f890d3",
+			"key": "nameCard",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}
